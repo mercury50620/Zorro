@@ -1,0 +1,7 @@
+change
+find
+get
+present
+read
+record
+take

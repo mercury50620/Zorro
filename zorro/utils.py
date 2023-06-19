@@ -4,6 +4,8 @@ from pathlib import Path
 from matplotlib import rcParams
 import yaml
 
+import nltk
+
 from zorro.scoring import count_correct_choices
 from zorro.data import DataExperimental
 
@@ -102,25 +104,29 @@ def get_phenomena_and_paradigms(excluded_paradigms: Optional[List[str]] = None,
                                 ) -> List[Tuple[str, str]]:
     phenomena = [
         # 4
-        'agreement_subject_verb',
+        #'agreement_subject_verb',
         # 2
-        'agreement_determiner_noun',
-        'filler-gap',
-        'island-effects',
-        'quantifiers',
-        'npi_licensing',
+        #'agreement_determiner_noun',
+        #'filler-gap',
+        #'island-effects',
+        #'quantifiers',
+        #'npi_licensing',
         # 3
-        'argument_structure',
+        #'argument_structure',
         # 1
-        'irregular',
-        'anaphor_agreement',
-        'ellipsis',
-        'binding',
-        'case',  # not in BLiMP
-        'local_attractor',  # not in BLiMP
+        #'irregular',
+        #'anaphor_agreement',
+        #'ellipsis',
+        #'binding',
+        #'case',  # not in BLiMP
+        #'local_attractor',  # not in BLiMP
+        #DP/NPパラメータ用
+        'definate_article',
+        'extraction_out_of_a_NP',
+        'left_branch_extraction_out_of_a_nominal_phrase'
     ]
 
-    if not excluded_paradigms:
+    if excluded_paradigms is None:
         excluded_paradigms = configs.Eval.excluded_paradigms
 
     # get list of (phenomenon, paradigm) tuples
@@ -133,7 +139,6 @@ def get_phenomena_and_paradigms(excluded_paradigms: Optional[List[str]] = None,
             paradigm = p.stem
             if paradigm not in excluded_paradigms:
                 res.append((phenomenon, paradigm))
-
     return res
 
 
@@ -257,3 +262,17 @@ def load_group_names(param_names: Optional[List[str]] = None,
         print(f'Found {res}')
 
     return res
+
+def get_verbs_followed_by_notby(node, prep1, prep2): #prep1 follows a verb and prep doesn't
+    good_verbs = []
+    if node.label().startswith('VB'):
+        candidate_verb = node.leaves()[0]
+    elif node.label().startswith('IN') is False:
+        candidate_verb = None
+    elif node.leaves()[0] == prep1 and node.leaves()[0] == prep2:
+        good_verbs.append(candidate_verb)
+    for child in node:
+        if isinstance(child, nltk.tree.Tree):
+            get_verbs_followed_by_notby(child, prep1, prep2)
+
+    return good_verbs

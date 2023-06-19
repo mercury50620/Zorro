@@ -5,7 +5,7 @@ import inflect
 from lemminflect import getInflection, getLemma
 
 from zorro import configs
-from zorro.counterbalance import find_counterbalanced_subset
+from zorro.balance_in_aochildes import find_balanced_subset_in_aochildes
 from zorro.vocab import get_vocab_words
 
 
@@ -61,7 +61,14 @@ def get_legal_words(tag: str,
 
     # find subset of words such that their total corpus frequencies are approx equal across corpora
     num_words_in_sample = configs.Data.tag2num_words[tag]
-    res = find_counterbalanced_subset(first_forms,
+    #res = find_counterbalanced_subset(first_forms,
+    #                                  min_size=num_words_in_sample,
+    #                                  max_size=num_words_in_sample+100,
+    #                                  second_forms=second_forms,
+    #                                  seed=seed,
+    #                                  verbose=verbose,
+    #                                  )
+    res = find_balanced_subset_in_aochildes(first_forms,
                                       min_size=num_words_in_sample,
                                       max_size=num_words_in_sample+100,
                                       second_forms=second_forms,

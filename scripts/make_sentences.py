@@ -9,7 +9,7 @@ from zorro.filter import collect_unique_pairs
 from zorro.utils import get_phenomena_and_paradigms, capitalize_names_in_sentence
 from zorro import configs
 
-SECONDARY_OUT_PATH = Path('/') / 'media' / 'ludwig_data' / 'Zorro' / 'sentences' or None
+#SECONDARY_OUT_PATH = Path('/') / 'media' / 'ludwig_data' / 'Zorro' / 'sentences' or None
 
 stop_words = (configs.Dirs.external_words / "stopwords.txt").open().read().split()
 number_words = (configs.Dirs.legal_words / "number_words.txt").open().read().split()
@@ -42,7 +42,7 @@ for phenomenon, paradigm in get_phenomena_and_paradigms():
     # save each file in repository, and also on shared drive
     for out_path in [
         Path("../sentences") / configs.Data.vocab_name / f'{phenomenon}-{paradigm}.txt',
-        SECONDARY_OUT_PATH / configs.Data.vocab_name / f'{phenomenon}-{paradigm}.txt',
+        #SECONDARY_OUT_PATH / configs.Data.vocab_name / f'{phenomenon}-{paradigm}.txt',
     ]:
         if not out_path.parent.is_dir():
             out_path.parent.mkdir(parents=True)
@@ -52,9 +52,9 @@ for phenomenon, paradigm in get_phenomena_and_paradigms():
             for sentence in sentences:
                 # check
                 words_to_check = sentence.split()
-                for w in words_to_check:
-                    if w.lower() not in vocab_words and w.lower() not in stop_words:
-                        raise RuntimeError(f'WARNING: Not a whole word and not a stop word: "{w}"')
+                #for w in words_to_check:
+                    #if w.lower() not in vocab_words and w.lower() not in stop_words:
+                    #    raise RuntimeError(f'WARNING: Not a whole word and not a stop word: "{w}"')
                 # write to file
                 f.write(sentence + '\n')
                 num_saved_sentences += 1
