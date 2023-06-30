@@ -4,8 +4,6 @@ from pathlib import Path
 from matplotlib import rcParams
 import yaml
 
-import nltk
-
 from zorro.scoring import count_correct_choices
 from zorro.data import DataExperimental
 
@@ -262,17 +260,3 @@ def load_group_names(param_names: Optional[List[str]] = None,
         print(f'Found {res}')
 
     return res
-
-def get_verbs_followed_by_notby(node, prep1, prep2): #prep1 follows a verb and prep doesn't
-    good_verbs = []
-    if node.label().startswith('VB'):
-        candidate_verb = node.leaves()[0]
-    elif node.label().startswith('IN') is False:
-        candidate_verb = None
-    elif node.leaves()[0] == prep1 and node.leaves()[0] == prep2:
-        good_verbs.append(candidate_verb)
-    for child in node:
-        if isinstance(child, nltk.tree.Tree):
-            get_verbs_followed_by_notby(child, prep1, prep2)
-
-    return good_verbs
