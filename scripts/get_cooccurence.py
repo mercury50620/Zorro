@@ -6,6 +6,7 @@ from nltk.stem import WordNetLemmatizer
 import sys
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
+from zorro import configs
 from zorro.words import get_legal_words
 
 legal_words_path = Path("data/legal_words")
@@ -30,10 +31,25 @@ def flatten_list(lst):
 
 def find_pos_location(tree, pos): #-> list[tuple]
     positions = []
-    for position in tree.treepositions():#深く見過ぎ
+    for position in tree.treepositions():#深く見過ぎ todo 一個下までしか見ない関数に変更 -> search_pos_locationに置き換えられるべき
         if isinstance(tree[position], nltk.tree.Tree) and tree[position].label().startswith(pos):
             positions.append(position)
     return positions
+
+def search_pos_location(tree, pos): #treeの一個下までしか見ない 一個しかとってこれない
+    if pos != "NN" and pos != "VB":
+        raise ValueError("対応していない品詞です")
+
+    for position in tree.treepositions():
+        if len(position) != 1:
+            pass
+        elif tree[position].label() == pos[0] + "P":
+
+            return tuple(list(position) + list(search_pos_location(tree[position], pos)))
+        elif tree[position].label().startswith(pos):
+            return position
+        else:
+            pass
 
 def find_word_location(tree, pos, word):#pos should be pos in a terminal node -> list[tuple]
     positions = []
@@ -82,20 +98,15 @@ def get_nouns_followed_by(tree, pos, prep):
             pass
         return nouns_followed_by_prep
 
-def get_object(tree, pred_pos, pred, obj_pos):
+def get_object(tree, pred_pos, pred, obj_pos) -> list:
     objs = []
     pred_locs = find_word_location(tree, pred_pos, pred)
+    #print(pred_locs)
     for pl in pred_locs:
-        try:
-            pos_location = find_pos_location(tree[pl[:-1]], obj_pos)
-            pos_location = [pos_loc for pos_loc in pos_location if len(pos_loc) == 1]
-            for pos_loc in pos_location:
-                obj = tree[pl[:-1]][pos_loc].leaves()[0] #一つしか存在しないはずなので、便宜的に[0]で取ってきている
-                objs.append(obj)
-            #print(tree[pl[:-2]])
-            #print(verb)
-        except:
-            pass
+        pos_location = search_pos_location(tree[pl[:-1]], obj_pos)
+        #print(pos_location, "pos_location")
+        obj = tree[pl[:-1]][pos_location].leaves()[0] #一つしか存在しないはずなので、便宜的に[0]で取ってきている
+        objs.append(obj)
         return objs
 
 def get_verbs_in_ptb_cds(ptbw):
@@ -214,32 +225,36 @@ if __name__ == "__main__":
 '''
 if __name__ == "__main__":
     
-    #nltk.download('ptb')
     articles = ptb.fileids()
     print(articles)
 #動詞と目的語のペア
     verbs_nouns_pair = [] #->list[tuple(str, list[str, ...])]
-    cds_verbs = set([wnl.lemmatize(v, 'v') for v in get_legal_words(tag='VBD')] + [wnl.lemmatize(v, 'v') for v in get_legal_words(tag='VBG')] + [wnl.lemmatize(v, 'v') for v in get_legal_words(tag='VBG')] + [wnl.lemmatize(v, 'v') for v in get_legal_words(tag='VBZ')])
-    print(cds_verbs)
+    #cds_verbs = set([wnl.lemmatize(v, 'v') for v in get_legal_words(tag='VBD')] + [wnl.lemmatize(v, 'v') for v in get_legal_words(tag='VBG')] + [wnl.lemmatize(v, 'v') for v in get_legal_words(tag='VBG')] + [wnl.lemmatize(v, 'v') for v in get_legal_words(tag='VBZ')])
+    cds_verbs = (configs.Dirs.legal_words / 'legal_verbs.txt').open().read().split()
+    cds_nouns = (configs.Dirs.legal_words / 'legal_nouns.txt').open().read().split()
+
     for i, art in enumerate(articles):
         print((i / len(articles))* 100, '% 終了（verbs_nouns_pair）')
         sents = ptb.parsed_sents(art)
         for j in range(len(sents)):
             for v in cds_verbs:
                 try:
-                    verbs_nouns_pair.append((v, wnl.lemmatize(get_object(sents[j], "VB", v, "NN"), 'n')))
-                    print(v)
-                    print(get_object(sents, "VB", v, "NN"))
+                    for obj in get_object(sents[j], "VB", v, "NN"):
+                        verbs_nouns_pair.append((v, wnl.lemmatize(obj, 'n')))          
                 except:
                     pass
-    verbs_nouns_pair = flatten_list(verbs_nouns_pair)
+    #print(verbs_nouns_pair)
     verbs_nouns_pair_freq = collections.Counter(verbs_nouns_pair)
-
-    verbs_nouns_pair = [k for k, v in verbs_nouns_pair_freq.items() if v >= 3]
-    verbs_nouns_pair_in_cds = get_nouns_in_ptb_cds(verbs_nouns_pair)
+    print(verbs_nouns_pair_freq)
+    verbs_nouns_pair = [k for k, v in verbs_nouns_pair_freq.items() if v >= 2]
+    #print(verbs_nouns_pair)
+    verbs_nouns_pair_in_cds = [(v,n) for v, n in verbs_nouns_pair if v in cds_verbs and n in cds_nouns] 
+    print(verbs_nouns_pair_in_cds)
 
     with open(legal_words_path / "verbs_nouns_pair.txt", mode = 'w') as f:
-        f.writelines('\n'.join(verbs_nouns_pair_in_cds))
+        for vn_pair in verbs_nouns_pair_in_cds:
+            line = f"{vn_pair[0]}, {vn_pair[1]}\n"
+            f.write(line)
 
     #print(verbs_followed_by_in_freq)
     #print(verbs_followed_by_from_freq)
