@@ -1,10 +1,10 @@
 import re
-
+from typing import List, Tuple, Union
 HASH = re.compile(r"#.*$")
 
 
 class Tree:
-    def __init__(self, pos: str, children: list["Tree"] | list[str]) -> None:
+    def __init__(self, pos: str, children: Union[List["Tree"], List[str]]) -> None:
         self.pos, self.feature = Tree.from_pos_string(pos)
         self.children = children
         assert len(self.children) > 0, "children must contain some Tree|str"
@@ -12,7 +12,7 @@ class Tree:
     @staticmethod
     def from_pos_string(
         txt: str,
-    ) -> tuple[str] | list[str]:  # remove indices like (NP-SBJ-1 -> NP-SBJ)
+    ) -> Union[Tuple[str], List[str]]:  # remove indices like (NP-SBJ-1 -> NP-SBJ)
         if "#" in txt:
             txt = HASH.sub("", txt)
         if "-" in txt:
@@ -31,7 +31,7 @@ class Tree:
         return len(self.leaves)
 
     @property
-    def leaves(self) -> list["Tree"]:
+    def leaves(self) -> List["Tree"]:
         def rec(node: Tree) -> None:
             if node.is_terminal:
                 result.append(node)
@@ -39,7 +39,7 @@ class Tree:
                 for child in node.children:
                     rec(child)
 
-        result: list["Tree"] = []
+        result: List["Tree"] = []
         rec(self)
         return result
 
@@ -50,8 +50,8 @@ class Tree:
         return token
 
     @property
-    def tokens(self) -> list[str]:
-        result: list[str] = []
+    def tokens(self) -> List[str]:
+        result: List[str] = []
         for leaf in self.leaves:
             result.append(leaf.token)
         return result
@@ -101,7 +101,7 @@ class Tree:
         return "\\begin{forest} " + f"{_rec(self)}" + " \\end{forest}\\\\"
 
     def draw_terminal(self) -> str:
-        result: list[str] = []
+        result: List[str] = []
         for leaf in self.leaves:
             result.append(leaf.token)
         return " ".join(result)

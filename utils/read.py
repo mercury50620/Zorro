@@ -1,5 +1,5 @@
 import re
-from typing import Iterator
+from typing import List
 from nltk import Tree
 
 class PTBReader:
@@ -55,7 +55,7 @@ class PTBReader:
         return Tree(pos, children)
 
 
-def ptb_reader(filepath: str) -> list[Tree]:
+def ptb_reader(filepath: str) -> List[Tree]:
     with open(filepath, 'r', encoding="utf-8", errors='ignore') as f:
         lines = f.read()
         trees = []
@@ -69,7 +69,7 @@ FIRST_PAREN = re.compile(r"\(\s*\(")
 # END_PAREN = re.compile(r"\).*$")
 
 
-def split_sentences(string: str) -> list[str]:
+def split_sentences(string: str) -> List[str]:
     string = SPACE.sub(' ', string)
     sentences = FIRST_PAREN.split(string)
     if sentences[0] == " ":

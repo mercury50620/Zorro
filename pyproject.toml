@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "zorro"
+version = "0.1.0"
+description = "The original version made by dr.phueb was managed by pip and my version uses poetry"
+authors = ["mercury50620 <mercury50620@gmail.com>"]
+readme = "README.md"
+packages = [
+    {include = "zorro"},
+    {include = "utils"},
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pyyaml = ">=5.4,<6.0"
+numpy = ">=1.19.0,<1.20.0"
+matplotlib = ">=3.2.2,<3.3.0"
+spacy = ">=2.3.2,<2.4.0"
+pandas = ">=1.1.3,<1.2.0"
+inflect = ">=4.1.0,<4.2.0"
+lemminflect = ">=0.2.2,<0.3.0"
+scipy = ">=1.5.3,<1.6.0"
+nltk = "^3.8.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -10,6 +10,7 @@ class Dirs:
     sentences = root / 'sentences'
     external_words = data / 'external_words'
     legal_words = data / 'legal_words'
+    childes_treebank = root / "childes_treebank"
 
 
 class Data:
