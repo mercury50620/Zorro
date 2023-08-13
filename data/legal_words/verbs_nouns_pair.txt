@@ -71,7 +71,6 @@ make, horse
 take, bite
 take, thing
 make, train
-make, birthday
 need, track
 get, part
 get, water
@@ -142,7 +141,6 @@ use, hand
 get, light
 see, face
 see, picture
-sit, way
 see, car
 use, water
 use, thing
@@ -169,7 +167,6 @@ take, walk
 get, food
 take, block
 take, shirt
-get, birthday
 get, dress
 use, leg
 get, shirt
@@ -254,7 +251,6 @@ break, one
 see, boy
 take, water
 lose, car
-live, room
 take, hat
 take, money
 get, bus
@@ -487,7 +483,6 @@ turn, tape
 make, ball
 know, difference
 need, hole
-mean, one
 make, chicken
 get, license
 take, test
@@ -503,7 +498,6 @@ take, train
 get, prize
 get, clay
 get, call
-see, birthday
 look, way
 see, dress
 see, sun
@@ -616,7 +610,6 @@ need, medicine
 see, fire
 need, key
 open, medicine
-think, time
 get, heart
 get, side
 make, sound

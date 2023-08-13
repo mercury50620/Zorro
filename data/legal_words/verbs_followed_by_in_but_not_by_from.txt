@@ -1,13 +1,7 @@
-mean
 help
-think
-send
 use
-land
 break
 teach
-sit
-step
-turn
-watch
-show
+need
+lose
+meet

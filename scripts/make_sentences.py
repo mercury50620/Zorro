@@ -3,7 +3,7 @@ generate sentences for all paradigms.
 """
 from pathlib import Path
 import importlib
-
+import os
 from zorro.vocab import get_vocab_words
 from zorro.filter import collect_unique_pairs
 from zorro.utils import get_phenomena_and_paradigms, capitalize_names_in_sentence
@@ -41,7 +41,7 @@ for phenomenon, paradigm in get_phenomena_and_paradigms():
 
     # save each file in repository, and also on shared drive
     for out_path in [
-        Path("../sentences") / configs.Data.vocab_name / f'{phenomenon}-{paradigm}.txt',
+        Path('sentences') / configs.Data.vocab_name / f'{phenomenon}-{paradigm}.txt',
         #SECONDARY_OUT_PATH / configs.Data.vocab_name / f'{phenomenon}-{paradigm}.txt',
     ]:
         if not out_path.parent.is_dir():
@@ -56,6 +56,7 @@ for phenomenon, paradigm in get_phenomena_and_paradigms():
                     #if w.lower() not in vocab_words and w.lower() not in stop_words:
                     #    raise RuntimeError(f'WARNING: Not a whole word and not a stop word: "{w}"')
                 # write to file
+                #print(sentence)
                 f.write(sentence + '\n')
                 num_saved_sentences += 1
 

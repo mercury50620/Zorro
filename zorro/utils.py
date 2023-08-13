@@ -119,8 +119,8 @@ def get_phenomena_and_paradigms(excluded_paradigms: Optional[List[str]] = None,
         #'case',  # not in BLiMP
         #'local_attractor',  # not in BLiMP
         #DP/NPパラメータ用
-        'definate_article',
-        'extraction_out_of_a_NP',
+        #'definate_article',
+        #'extraction_out_of_a_NP',
         'left_branch_extraction_out_of_a_nominal_phrase'
     ]
 

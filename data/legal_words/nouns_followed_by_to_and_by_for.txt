@@ -1,0 +1,6 @@
+letter
+train
+box
+money
+word
+card

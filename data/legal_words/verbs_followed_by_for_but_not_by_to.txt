@@ -1,7 +1,11 @@
-open
 live
 win
 know
 work
 watch
-see
+turn
+watch
+take
+open
+break
+help
